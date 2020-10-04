@@ -128,7 +128,7 @@ public class HTTPRequest {
         if (driver.getPageSource().contains("An error occurred")) {
             System.out.println("Não foi possível baixar a música em arquivo .mp3");
         } else {
-            
+
             try {
                 WebElement downloadButton = driver.findElement(new By.ByLinkText("Download"));
                 new Actions(driver).moveToElement(downloadButton).click().perform();
