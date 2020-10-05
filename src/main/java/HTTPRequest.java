@@ -114,6 +114,7 @@ public class HTTPRequest {
 
     public void RequestSessionYtmp3(String url) throws InterruptedException {
         this.getChromeBrowser();
+        this.setChromeDriverSize();
         WebDriver driver = new ChromeDriver();
         new ChromeOptions().setCapability("download.default_directory", "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
         driver.get("https://ytmp3.cc/en13/");
@@ -123,8 +124,9 @@ public class HTTPRequest {
         videoUrl.submit();
 
         /* Cooldown tempo servidor */
-        Thread.sleep(2000);
+        Thread.sleep(10000);
 
+        /* Erro no servidor */
         if (driver.getPageSource().contains("An error occurred")) {
             System.out.println("Não foi possível baixar a música em arquivo .mp3");
         } else {
@@ -138,6 +140,49 @@ public class HTTPRequest {
             }
 
         }
+
+        /* Se fechar o download para */
+        // driver.close();
+
+    }
+
+    public void RequestSessionYtmp3(List<String> list) throws InterruptedException {
+        this.getChromeBrowser();
+        this.setChromeDriverSize();
+        WebDriver driver = new ChromeDriver();
+        new ChromeOptions().setCapability("download.default_directory", "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
+
+        for (String song : list) {
+            //driver.findElement(new By.ByCssSelector("body")).sendKeys(Keys.CONTROL + "t");
+            driver.get("https://ytmp3.cc/en13/");
+
+            WebElement videoUrl = driver.findElement(new By.ByName("video"));
+            videoUrl.sendKeys(song);
+            videoUrl.submit();
+
+            /* Cooldown tempo servidor */
+            Thread.sleep(10000);
+
+            /* Erro no servidor */
+            if (driver.getPageSource().contains("An error occurred")) {
+                System.out.println("Não foi possível baixar a música em arquivo .mp3");
+            } else {
+
+                try {
+                    WebElement downloadButton = driver.findElement(new By.ByLinkText("Download"));
+                    new Actions(driver).moveToElement(downloadButton).click().perform();
+                    System.out.println("Download foi iniciado: " + driver.findElement(new By.ById("title")).getText());
+                } catch (Exception e) {
+                    System.out.println("Não foi possível baixar a música em arquivo .mp3");
+                }
+
+                String originalHandle = this.closeTabs(driver);
+                driver.switchTo().window(originalHandle);
+
+            }
+
+        } //for
+
 
     }
 
@@ -191,6 +236,10 @@ public class HTTPRequest {
 
     private ChromeOptions getHeadlessChrome() {
         return new ChromeOptions().addArguments("--headless");
+    }
+
+    public void setChromeDriverSize() {
+        new ChromeOptions().addArguments("--window-size=1920,1080");
     }
 
 
