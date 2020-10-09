@@ -2,18 +2,16 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.html.*;
-import okio.Timeout;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -161,7 +159,7 @@ public class HTTPRequest {
             videoUrl.submit();
 
             /* Cooldown tempo servidor */
-            Thread.sleep(10000);
+            Thread.sleep(3000);
 
             /* Erro no servidor */
             if (driver.getPageSource().contains("An error occurred")) {
@@ -184,6 +182,17 @@ public class HTTPRequest {
         } //for
 
 
+    }
+
+    public List<String> openFile (String file) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        List<String> list = new ArrayList<>();
+
+        while (bufferedReader.ready()) {
+            list.add(bufferedReader.readLine());
+        }
+
+        return list;
     }
 
     public void RequestSessionMp3Youtube() throws InterruptedException {
