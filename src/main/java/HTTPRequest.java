@@ -8,12 +8,14 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 public class HTTPRequest {
@@ -151,7 +153,6 @@ public class HTTPRequest {
         new ChromeOptions().setCapability("download.default_directory", "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
 
         for (String song : list) {
-            //driver.findElement(new By.ByCssSelector("body")).sendKeys(Keys.CONTROL + "t");
             driver.get("https://ytmp3.cc/en13/");
 
             WebElement videoUrl = driver.findElement(new By.ByName("video"));
@@ -159,32 +160,41 @@ public class HTTPRequest {
             videoUrl.submit();
 
             /* Cooldown tempo servidor */
-            Thread.sleep(3000);
-
-            /* Erro no servidor */
-            if (driver.getPageSource().contains("An error occurred")) {
-                System.out.println("Não foi possível baixar a música em arquivo .mp3");
-            } else {
+            while (true) {
+                String downloadable = null;
 
                 try {
-                    WebElement downloadButton = driver.findElement(new By.ByLinkText("Download"));
-                    new Actions(driver).moveToElement(downloadButton).click().perform();
-                    System.out.println("Download foi iniciado: " + driver.findElement(new By.ById("title")).getText());
-                } catch (Exception e) {
-                    System.out.println("Não foi possível baixar a música em arquivo .mp3");
+                    downloadable = driver.findElement(new By.ByLinkText("Download")).getText();
+                } catch (Exception e) {}
+
+                if (downloadable != null && downloadable.contains("Download")) {
+                    try {
+                        WebElement downloadButton = driver.findElement(new By.ByLinkText("Download"));
+                        new Actions(driver).moveToElement(downloadButton).click().perform();
+                        System.out.println("Download foi iniciado: " + driver.findElement(new By.ById("title")).getText());
+                    } catch (Exception e) {
+                        System.out.println("Não foi possível baixar a música em arquivo .mp3: " + song);
+                    }
+
+                    String originalHandle = this.closeTabs(driver);
+                    driver.switchTo().window(originalHandle);
+
+                    break;
                 }
 
-                String originalHandle = this.closeTabs(driver);
-                driver.switchTo().window(originalHandle);
-
+                /* Erro no servidor */
+                if (driver.getPageSource().contains("An error occurred")) {
+                    System.out.println("Um erro do servidor YTMP3 ocorreu para o link: " + song);
+                    break;
+                }
             }
+
 
         } //for
 
-
     }
 
-    public List<String> openFile (String file) throws IOException {
+    public List<String> openFile(String file) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         List<String> list = new ArrayList<>();
 
