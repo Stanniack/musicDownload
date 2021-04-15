@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import utils.Tabs;
 
@@ -13,12 +14,20 @@ import java.util.List;
 public class Ytmp3 {
 
     public void requestSession(List<String> list) throws InterruptedException {
+        //this.getGeckoBrowser();
         this.getChromeBrowser();
-        this.setChromeDriverSize();
+        //this.setChromeDriverSize();
+        //this.getHeadlessChrome();
 
-        WebDriver driver = new ChromeDriver();
-        new ChromeOptions().setCapability("download.default_directory",
-                        "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
+        ChromeOptions co = new ChromeOptions();
+        //co.setHeadless(true);
+        //co.addArguments("--disable-gpu");
+        co.setCapability("download.default_directory",
+                "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
+
+        //WebDriver driver = new FirefoxDriver();
+        WebDriver driver = new ChromeDriver(co);
+
 
         for (String song : list) {
             driver.get("https://ytmp3.cc/en13/");
@@ -47,13 +56,13 @@ public class Ytmp3 {
                     String originalHandle = new Tabs().closeAllSecondaryTabs(driver);
                     driver.switchTo().window(originalHandle);
 
-                    //break;
+                    break;
                 }
 
                 /* Erro no servidor */
                 if (driver.getPageSource().contains("An error occurred")) {
                     System.out.println("Um erro do servidor YTMP3 ocorreu para o link: " + song);
-                    //break;
+                    break;
                 }
             }
 
@@ -64,6 +73,10 @@ public class Ytmp3 {
 
     private void getChromeBrowser() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Mateus\\OneDrive\\Documentos\\chromedriver88.exe");
+    }
+
+    private void getGeckoBrowser() {
+        System.setProperty("webdriver.gecko.driver", "C:\\Users\\Mateus\\OneDrive\\Documentos\\geckodriver.exe");
     }
 
     private ChromeOptions getHeadlessChrome() {
