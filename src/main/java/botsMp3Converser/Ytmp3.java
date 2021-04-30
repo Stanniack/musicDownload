@@ -5,10 +5,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import utils.Tabs;
 
+import java.io.File;
 import java.util.List;
 
 public class Ytmp3 {
@@ -25,12 +30,13 @@ public class Ytmp3 {
         co.setCapability("download.default_directory",
                 "C:\\Users\\Mateus\\OneDrive\\Documentos\\seleniumfiles");
 
+
         //WebDriver driver = new FirefoxDriver();
         WebDriver driver = new ChromeDriver(co);
 
 
         for (String song : list) {
-            driver.get("https://ytmp3.cc/en13/");
+            driver.get("https://ytmp3z.cc");
 
             WebElement videoUrl = driver.findElement(new By.ByName("video"));
             videoUrl.sendKeys(song);
@@ -72,7 +78,7 @@ public class Ytmp3 {
     }
 
     private void getChromeBrowser() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Mateus\\OneDrive\\Documentos\\chromedriver88.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Mateus\\OneDrive\\Documentos\\chromedriver90.exe");
     }
 
     private void getGeckoBrowser() {
